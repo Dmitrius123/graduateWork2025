@@ -6,56 +6,85 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @State private var predictionResult: String = "Разпозната цифра: ?"
+    @State private var drawView = DrawView()
+
+    let model = mnistCNN()
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+        VStack {
+            // Представление для рисования
+            DrawViewRepresentable(drawView: $drawView)
+                .frame(width: 300, height: 300)
+                .background(Color.black)
+                .border(Color.white, width: 2)
+                .onAppear {}
+
+            HStack {
+                Button("Изтрий") {
+                    drawView.clear()  // Очистить линию
+                    predictionResult = "Разпозната цифра: ?"
                 }
-                .onDelete(perform: deleteItems)
+                .padding()
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+
+                Button("Провери") {
+                    predictDigit()
+                }
+                .padding()
+                .background(Color.green)
+                .foregroundColor(.white)
+                .cornerRadius(10)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
+
+            Text(predictionResult)
+                .padding()
         }
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+    func predictDigit() {
+        guard let context = drawView.getViewContext(), let pixelBuffer = createPixelBuffer(from: context) else {
+            return
         }
+
+        let output = try? model.prediction(image: pixelBuffer)
+        predictionResult = "Разпозната цифра: \(output?.classLabel ?? "Error")"
     }
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
+    func createPixelBuffer(from context: CGContext) -> CVPixelBuffer? {
+        var pixelBuffer: CVPixelBuffer?
+        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+                     kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
+        CVPixelBufferCreate(kCFAllocatorDefault, 28, 28, kCVPixelFormatType_OneComponent8, attrs, &pixelBuffer)
+
+        guard let buffer = pixelBuffer else { return nil }
+
+        CVPixelBufferLockBaseAddress(buffer, [])
+        let pixelData = CVPixelBufferGetBaseAddress(buffer)
+
+        context.drawPath(using: .fill)
+        let cgImage = context.makeImage()
+
+        let ciImage = CIImage(cgImage: cgImage!)
+        let ciContext = CIContext()
+        ciContext.render(ciImage, to: buffer)
+
+        CVPixelBufferUnlockBaseAddress(buffer, [])
+        return buffer
     }
 }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+struct DrawViewRepresentable: UIViewRepresentable {
+    @Binding var drawView: DrawView
+
+    func makeUIView(context: Context) -> DrawView {
+        return drawView
+    }
+
+    func updateUIView(_ uiView: DrawView, context: Context) {
+    }
 }
