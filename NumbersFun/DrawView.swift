@@ -49,7 +49,7 @@ class DrawView: UIView {
         lines.removeAll()
         setNeedsDisplay()
         self.layer.sublayers?.removeAll()
-        self.backgroundColor = backgroundColor // Устанавливаем цвет фона
+        self.backgroundColor = backgroundColor
     }
 
     func getViewContext() -> CGContext? {
