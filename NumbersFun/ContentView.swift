@@ -13,24 +13,23 @@ struct ContentView: View {
     @State private var selectedDigit: Int = 0
     let model = try? mnistCNN(configuration: .init())
     
-    // Темные цвета через RGB
+    
     let levelColors: [UIColor] = [
-        UIColor(red: 20/255, green: 20/255, blue: 20/255, alpha: 1), // Очень темный серый
-        UIColor(red: 10/255, green: 0/255, blue: 50/255, alpha: 1),  // Темно-синий
-        UIColor(red: 40/255, green: 0/255, blue: 40/255, alpha: 1),  // Темно-фиолетовый
-        UIColor(red: 0/255, green: 50/255, blue: 0/255, alpha: 1),   // Темно-зеленый
-        UIColor(red: 50/255, green: 0/255, blue: 0/255, alpha: 1),   // Темно-красный
-        UIColor(red: 40/255, green: 40/255, blue: 0/255, alpha: 1),  // Темно-желтый
-        UIColor(red: 50/255, green: 0/255, blue: 50/255, alpha: 1),  // Темно-фиолетовый
-        UIColor(red: 0/255, green: 0/255, blue: 50/255, alpha: 1),   // Темно-синий
-        UIColor(red: 0/255, green: 50/255, blue: 50/255, alpha: 1),  // Темно-голубой
-        UIColor(red: 20/255, green: 0/255, blue: 20/255, alpha: 1)   // Темно-бордовый
+        UIColor(red: 20/255, green: 20/255, blue: 20/255, alpha: 1),
+        UIColor(red: 10/255, green: 0/255, blue: 50/255, alpha: 1),
+        UIColor(red: 40/255, green: 0/255, blue: 40/255, alpha: 1),
+        UIColor(red: 0/255, green: 50/255, blue: 0/255, alpha: 1),
+        UIColor(red: 50/255, green: 0/255, blue: 0/255, alpha: 1),
+        UIColor(red: 40/255, green: 40/255, blue: 0/255, alpha: 1),
+        UIColor(red: 50/255, green: 0/255, blue: 50/255, alpha: 1),
+        UIColor(red: 0/255, green: 0/255, blue: 50/255, alpha: 1),
+        UIColor(red: 0/255, green: 50/255, blue: 50/255, alpha: 1),
+        UIColor(red: 20/255, green: 0/255, blue: 20/255, alpha: 1)
     ]
     
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                // Отступ сверху 10%
                 Spacer()
                     .frame(height: geometry.size.height * 0.1)
                 
@@ -38,15 +37,13 @@ struct ContentView: View {
                     .font(.title)
                     .padding(.top, 10)
                 
-                // Используем GeometryReader для динамического размера холста
                 GeometryReader { geometry in
                     VStack {
-                        // Квадратный холст с отступами 7%
                         DrawViewRepresentable(drawView: $drawView, selectedDigit: selectedDigit)
-                            .frame(width: geometry.size.width * 0.92, height: geometry.size.width * 0.92) // 80% ширины
+                            .frame(width: geometry.size.width * 0.92, height: geometry.size.width * 0.92)
                             .background(Color.black)
                             .cornerRadius(20)
-                            .padding(geometry.size.width * 0.04) // Отступы по 10%
+                            .padding(geometry.size.width * 0.04)
                     }
                     
                 }
@@ -54,7 +51,6 @@ struct ContentView: View {
                 
                 HStack {
                     Button("Изтрий") {
-                        // Используем UIColor для установки цвета фона
                         drawView.clear(backgroundColor: levelColors[selectedDigit])
                         predictionResult = "Разпозната цифра: ?"
                     }
@@ -73,25 +69,22 @@ struct ContentView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
                 }
-                    //                .padding(.top,20)
                     
                     Text(predictionResult)
                         .font(.headline)
                         .padding(.top, 15)
                     
-                    // Кнопки для выбора цифры
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
                             ForEach(0..<10) { digit in
                                 Button(action: {
                                     selectedDigit = digit
-                                    // Устанавливаем темный цвет фона через UIColor
                                     drawView.clear(backgroundColor: levelColors[digit])
                                 }) {
                                     Text("\(digit)")
                                         .font(.title)
                                         .frame(width: 50, height: 50)
-                                        .background(Color(levelColors[digit])) // Используем тот же цвет, что и для холста
+                                        .background(Color(levelColors[digit]))
                                         .foregroundColor(.white)
                                         .cornerRadius(10)
                                 }
@@ -101,12 +94,12 @@ struct ContentView: View {
                     }
                     .padding(.top, 35)
                     
-                    // Отступ снизу 20%
-                    Spacer() // Оставляем оставшуюся часть экрана пустой
-                        .frame(height: geometry.size.height * 0.1) // Отступ снизу 20% от высоты экрана
+                
+                    Spacer()
+                        .frame(height: geometry.size.height * 0.1)
                 }
             }
-            .edgesIgnoringSafeArea(.all) // Чтобы элементы не прилипали к краям экрана
+            .edgesIgnoringSafeArea(.all)
         }
         
         func predictDigit() {

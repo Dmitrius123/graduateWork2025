@@ -9,14 +9,13 @@ import SwiftUI
 
 struct DrawViewRepresentable: UIViewRepresentable {
     @Binding var drawView: DrawView
-    var selectedDigit: Int // Добавляем параметр для выбранной цифры
+    var selectedDigit: Int
 
     func makeUIView(context: Context) -> DrawView {
         return drawView
     }
 
     func updateUIView(_ uiView: DrawView, context: Context) {
-        // Обновляем состояние drawView, если необходимо
         uiView.setNeedsDisplay()
     }
 }

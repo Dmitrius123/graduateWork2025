@@ -17,7 +17,7 @@ struct LevelSelectionView: View {
 
     var body: some View {
         VStack {
-            Text("Выберите уровень (цифру):")
+            Text("Изберете ниво (цифра):")
                 .font(.title)
                 .padding()
 
@@ -30,7 +30,7 @@ struct LevelSelectionView: View {
                             Text("\(digit)")
                                 .font(.title)
                                 .frame(width: 50, height: 50)
-                                .background(levelColors[digit]) // Цвет фона для цифры
+                                .background(levelColors[digit])
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
