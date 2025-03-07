@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 class DrawView: UIView {
     var linewidth = CGFloat(15) { didSet { setNeedsDisplay() } }
     var color = UIColor.white { didSet { setNeedsDisplay() } }
@@ -46,11 +45,11 @@ class DrawView: UIView {
         drawPath.stroke()
     }
 
-    func clear() {
+    func clear(backgroundColor: UIColor) {
         lines.removeAll()
         setNeedsDisplay()
         self.layer.sublayers?.removeAll()
-        self.backgroundColor = .black
+        self.backgroundColor = backgroundColor // Устанавливаем цвет фона
     }
 
     func getViewContext() -> CGContext? {
@@ -66,7 +65,6 @@ class DrawView: UIView {
         return context
     }
 }
-
 
 class Line {
     var start, end: CGPoint
