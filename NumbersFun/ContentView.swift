@@ -191,7 +191,7 @@ struct AnimatedDigitView: View {
                     }
                 }
                 .trim(from: 0, to: progress)
-                .stroke(Color(red: 20/255, green: 0/255, blue: 40/255), lineWidth: 12)
+                .stroke(Color(red: 20/255, green: 0/255, blue: 40/255), lineWidth: 45)
                 .animation(.easeInOut(duration: 2.5), value: progress)
             }
         }
