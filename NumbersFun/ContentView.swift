@@ -32,7 +32,7 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                Text("Начертайте цифру: \(selectedDigit)")
+                Text("Начертай цифра: \(selectedDigit)")
                     .font(.title)
                     .padding(.top, geometry.size.height * 0.1)
 
@@ -164,7 +164,7 @@ struct ContentView: View {
     }
 }
 
-// Вставляем `AnimatedDigitView` в конце файла
+
 struct AnimatedDigitView: View {
     let digit: Int
     let progress: CGFloat
@@ -172,28 +172,26 @@ struct AnimatedDigitView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // Серый фон (он теперь ниже цифры)
                 Color.white.opacity(0.7)
                     .frame(width: geometry.size.width, height: geometry.size.height)
 
-                // Анимированная цифра поверх серого слоя
+                
                 Path { path in
                     switch digit {
                     case 0:
-                        path.addEllipse(in: CGRect(x: geometry.size.width * 0.15,
+                        path.addEllipse(in: CGRect(x: geometry.size.width * 0.25,
                                                    y: geometry.size.height * 0.15,
-                                                   width: geometry.size.width * 0.7,
+                                                   width: geometry.size.width * 0.5,
                                                    height: geometry.size.height * 0.7))
                     case 1:
-                        path.move(to: CGPoint(x: geometry.size.width * 0.5, y: geometry.size.height * 0.2))
+                        path.move(to: CGPoint(x: geometry.size.width * 0.5, y: geometry.size.height * 0.15))
                         path.addLine(to: CGPoint(x: geometry.size.width * 0.5, y: geometry.size.height * 0.8))
-                    // Добавь пути для других цифр (2-9)
                     default:
                         break
                     }
                 }
                 .trim(from: 0, to: progress)
-                .stroke(Color(red: 20/255, green: 0/255, blue: 40/255), lineWidth: 12) // Темно-фиолетовый
+                .stroke(Color(red: 20/255, green: 0/255, blue: 40/255), lineWidth: 12)
                 .animation(.easeInOut(duration: 2.5), value: progress)
             }
         }
