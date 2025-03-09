@@ -12,6 +12,8 @@ struct ContentView: View {
     @State private var drawView = DrawView()
     @State private var selectedDigit: Int = 0
     @State private var isTestMode = false
+    @State private var showDrawingGuide = false
+    @State private var animationProgress: CGFloat = 0.0
     let model = try? mnistCNN(configuration: .init())
 
     let levelColors: [UIColor] = [
@@ -30,15 +32,24 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                Text("Начертайте цифрa: \(selectedDigit)")
+                Text("Начертайте цифру: \(selectedDigit)")
                     .font(.title)
                     .padding(.top, geometry.size.height * 0.1)
 
-                DrawViewRepresentable(drawView: $drawView, selectedDigit: selectedDigit)
-                    .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
-                    .background(Color(levelColors[selectedDigit]))
-                    .cornerRadius(20)
-                    .padding(.bottom, 20)
+                ZStack {
+                    DrawViewRepresentable(drawView: $drawView, selectedDigit: selectedDigit)
+                        .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
+                        .background(Color(levelColors[selectedDigit]))
+                        .cornerRadius(20)
+                        .padding(.bottom, 20)
+
+                    if showDrawingGuide {
+                        AnimatedDigitView(digit: selectedDigit, progress: animationProgress)
+                            .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
+                            .cornerRadius(20)
+                            .padding(.bottom, 20)// Без overlay
+                    }
+                }
 
                 HStack {
                     Button("Изтрий") {
@@ -71,6 +82,7 @@ struct ContentView: View {
                             Button(action: {
                                 selectedDigit = digit
                                 drawView.clear(backgroundColor: levelColors[digit])
+                                startAnimation()
                             }) {
                                 Text("\(digit)")
                                     .font(.title)
@@ -107,34 +119,83 @@ struct ContentView: View {
     }
 
     func predictDigit() {
-                guard let context = drawView.getViewContext(), let pixelBuffer = createPixelBuffer(from: context) else {
-                    return
-                }
-                
-                let output = try? model?.prediction(image: pixelBuffer)
-                let predictedDigit = output?.classLabel ?? "?"
-                
-                if let predictedInt = Int(predictedDigit), predictedInt == selectedDigit {
-                    predictionResult = "Браво! Това е \(predictedInt)"
-                } else {
-                    predictionResult = "Опитай отново! Това е \(predictedDigit)"
-                }
-            }
-            
-            func createPixelBuffer(from context: CGContext) -> CVPixelBuffer? {
-                var pixelBuffer: CVPixelBuffer?
-                let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+        guard let context = drawView.getViewContext(), let pixelBuffer = createPixelBuffer(from: context) else {
+            return
+        }
+
+        let output = try? model?.prediction(image: pixelBuffer)
+        let predictedDigit = output?.classLabel ?? "?"
+
+        if let predictedInt = Int(predictedDigit), predictedInt == selectedDigit {
+            predictionResult = "Браво! Това е \(predictedInt)"
+        } else {
+            predictionResult = "Опитай отново! Това е \(predictedDigit)"
+        }
+    }
+
+    func createPixelBuffer(from context: CGContext) -> CVPixelBuffer? {
+        var pixelBuffer: CVPixelBuffer?
+        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
                      kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
-                CVPixelBufferCreate(kCFAllocatorDefault, 28, 28, kCVPixelFormatType_OneComponent8, attrs, &pixelBuffer)
-                
-                guard let buffer = pixelBuffer else { return nil }
-                
-                CVPixelBufferLockBaseAddress(buffer, [])
-                let ciContext = CIContext()
-                let ciImage = CIImage(cgImage: context.makeImage()!)
-                ciContext.render(ciImage, to: buffer)
-                CVPixelBufferUnlockBaseAddress(buffer, [])
-                
-                return buffer
+        CVPixelBufferCreate(kCFAllocatorDefault, 28, 28, kCVPixelFormatType_OneComponent8, attrs, &pixelBuffer)
+
+        guard let buffer = pixelBuffer else { return nil }
+
+        CVPixelBufferLockBaseAddress(buffer, [])
+        let ciContext = CIContext()
+        let ciImage = CIImage(cgImage: context.makeImage()!)
+        ciContext.render(ciImage, to: buffer)
+        CVPixelBufferUnlockBaseAddress(buffer, [])
+
+        return buffer
+    }
+
+    func startAnimation() {
+        animationProgress = 0.0
+        showDrawingGuide = true
+
+        withAnimation(.easeInOut(duration: 2.5)) {
+            animationProgress = 1.0
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            showDrawingGuide = false
+        }
+    }
+}
+
+// Вставляем `AnimatedDigitView` в конце файла
+struct AnimatedDigitView: View {
+    let digit: Int
+    let progress: CGFloat
+
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack {
+                // Серый фон (он теперь ниже цифры)
+                Color.white.opacity(0.7)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+
+                // Анимированная цифра поверх серого слоя
+                Path { path in
+                    switch digit {
+                    case 0:
+                        path.addEllipse(in: CGRect(x: geometry.size.width * 0.15,
+                                                   y: geometry.size.height * 0.15,
+                                                   width: geometry.size.width * 0.7,
+                                                   height: geometry.size.height * 0.7))
+                    case 1:
+                        path.move(to: CGPoint(x: geometry.size.width * 0.5, y: geometry.size.height * 0.2))
+                        path.addLine(to: CGPoint(x: geometry.size.width * 0.5, y: geometry.size.height * 0.8))
+                    // Добавь пути для других цифр (2-9)
+                    default:
+                        break
+                    }
+                }
+                .trim(from: 0, to: progress)
+                .stroke(Color(red: 20/255, green: 0/255, blue: 40/255), lineWidth: 12) // Темно-фиолетовый
+                .animation(.easeInOut(duration: 2.5), value: progress)
+            }
+        }
     }
 }
