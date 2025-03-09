@@ -175,24 +175,37 @@ struct AnimatedDigitView: View {
                 Color.white.opacity(0.7)
                     .frame(width: geometry.size.width, height: geometry.size.height)
 
-                
                 Path { path in
                     switch digit {
                     case 0:
-                        path.addEllipse(in: CGRect(x: geometry.size.width * 0.25,
-                                                   y: geometry.size.height * 0.15,
-                                                   width: geometry.size.width * 0.5,
-                                                   height: geometry.size.height * 0.7))
+                        path.addEllipse(in: CGRect(
+                            x: geometry.size.width * 0.25,
+                            y: geometry.size.height * 0.15,
+                            width: geometry.size.width * 0.5,
+                            height: geometry.size.height * 0.7
+                        ))
                     case 1:
-                        path.move(to: CGPoint(x: geometry.size.width * 0.5, y: geometry.size.height * 0.15))
-                        path.addLine(to: CGPoint(x: geometry.size.width * 0.5, y: geometry.size.height * 0.8))
+                        path.move(to: CGPoint(
+                            x: geometry.size.width * 0.5,
+                            y: geometry.size.height * 0.15
+                        ))
+                        path.addLine(to: CGPoint(
+                            x: geometry.size.width * 0.5,
+                            y: geometry.size.height * 0.8
+                        ))
                     default:
                         break
                     }
                 }
                 .trim(from: 0, to: progress)
-                .stroke(Color(red: 20/255, green: 0/255, blue: 40/255), lineWidth: 45)
-                .animation(.easeInOut(duration: 2.5), value: progress)
+                .stroke(
+                    Color(red: 20/255, green: 0/255, blue: 40/255),
+                    style: StrokeStyle(
+                        lineWidth: 45,
+                        lineCap: .round
+                    )
+                )
+                .animation(.easeInOut(duration: 2), value: progress)
             }
         }
     }
