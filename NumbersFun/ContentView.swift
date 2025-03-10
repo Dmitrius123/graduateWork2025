@@ -175,7 +175,12 @@ struct AnimatedDigitView: View {
                 Color.white.opacity(0.7)
                     .frame(width: geometry.size.width, height: geometry.size.height)
 
+                
                 Path { path in
+                    let w = geometry.size.width
+                    let h = geometry.size.height
+                    let strokeWidth: CGFloat = 12
+                    
                     switch digit {
                     case 0:
                         path.addEllipse(in: CGRect(
@@ -185,14 +190,77 @@ struct AnimatedDigitView: View {
                             height: geometry.size.height * 0.7
                         ))
                     case 1:
-                        path.move(to: CGPoint(
-                            x: geometry.size.width * 0.5,
-                            y: geometry.size.height * 0.15
+                        path.move(to: CGPoint(x: w * 0.35, y: h * 0.4))
+                        path.addLine(to: CGPoint(x: w * 0.5, y: h * 0.2))
+                        path.move(to: CGPoint(x: w * 0.5, y: h * 0.2))
+                        path.addLine(to: CGPoint(x: w * 0.5, y: h * 0.8))
+                        
+                    case 2:
+                        path.move(to: CGPoint(x: w * 0.3, y: h * 0.2))
+                        path.addArc(tangent1End: CGPoint(x: w * 0.7, y: h * 0.2), tangent2End: CGPoint(x: w * 0.7, y: h * 0.8), radius: w * 0.2)
+                        path.addLine(to: CGPoint(x: w * 0.3, y: h * 0.8))
+                        path.addLine(to: CGPoint(x: w * 0.7, y: h * 0.8))
+                    case 3:
+                        path.move(to: CGPoint(x: w * 0.4, y: h * 0.2))
+                        path.addArc(tangent1End: CGPoint(x: w * 0.7, y: h * 0.2), tangent2End: CGPoint(x: w * 0.7, y: h * 0.5), radius: w * 0.2)
+                        
+                        path.addArc(tangent1End: CGPoint(x: w * 0.7, y: h * 0.5), tangent2End: CGPoint(x: w * 0.4, y: h * 0.7), radius: w * 0.2)
+                        
+                        path.move(to: CGPoint(x: w * 0.3, y: h-h * 0.1))
+                        path.addArc(tangent1End: CGPoint(x: w * 0.7, y: h - h * 0.1), tangent2End: CGPoint(x: w * 0.7, y: h - h * 0.4), radius: w * 0.2)
+                        path.addArc(tangent1End: CGPoint(x: w * 0.7, y: h - h * 0.4), tangent2End: CGPoint(x: w * 0.4, y: h - h * 0.6), radius: w * 0.2)
+                    case 4:
+                        path.move(to: CGPoint(x: w * 0.7, y: h * 0.8))
+                        path.addLine(to: CGPoint(x: w * 0.7, y: h * 0.2))
+                        path.addLine(to: CGPoint(x: w * 0.3, y: h * 0.6))
+                        path.addLine(to: CGPoint(x: w * 0.8, y: h * 0.6))
+                    case 5:
+                        path.move(to: CGPoint(x: w * 0.7, y: h * 0.2))
+                        path.addLine(to: CGPoint(x: w * 0.3, y: h * 0.2))
+                        path.addLine(to: CGPoint(x: w * 0.3, y: h * 0.4))
+                        path.addArc(tangent1End: CGPoint(x: w * 0.7, y: h * 0.4), tangent2End: CGPoint(x: w * 0.7, y: h * 0.7), radius: w * 0.2)
+                        
+                        path.addArc(tangent1End: CGPoint(x: w * 0.7, y: h * 0.7), tangent2End: CGPoint(x: w * 0.3, y: h * 1), radius: w * 0.2)
+                        path.addLine(to: CGPoint(x: w * 0.3, y: h * 0.76))
+                    case 6:
+                        path.move(to: CGPoint(x: w - w * 0.4, y: h * 0.2))
+                        path.addArc(tangent1End: CGPoint(x: w - w * 0.7, y: h * 0.2), tangent2End: CGPoint(x: w - w * 0.7, y: h * 0.5), radius: w * 0.2)
+
+                        path.addArc(tangent1End: CGPoint(x: w - w * 0.7, y: h * 0.8), tangent2End: CGPoint(x: w - w * 0.3, y: h * 0.8), radius: w * 0.2)
+
+                        path.addEllipse(in: CGRect(
+                            x: geometry.size.width * 0.31,
+                            y: geometry.size.height * 0.45,
+                            width: geometry.size.width * 0.35,
+                            height: geometry.size.height * 0.35
                         ))
-                        path.addLine(to: CGPoint(
-                            x: geometry.size.width * 0.5,
-                            y: geometry.size.height * 0.8
-                        ))
+                    case 7:
+                        path.move(to: CGPoint(x: w * 0.3, y: h * 0.2))
+                        path.addLine(to: CGPoint(x: w * 0.7, y: h * 0.2))
+                        path.addLine(to: CGPoint(x: w * 0.5, y: h * 0.8))
+                    case 8:
+                        let centerX = w * 0.5
+                        let centerY = h * 0.5
+                        let radiusSmall = w * 0.15
+                        let radiusLarge = w * 0.20
+                        path.move(to: CGPoint(x: centerX, y: centerY))
+                        path.addArc(center: CGPoint(x: centerX, y: centerY - radiusLarge),
+                                    radius: radiusSmall,
+                                    startAngle: .degrees(90),
+                                    endAngle: .degrees(450),
+                                    clockwise: false)
+
+                        path.move(to: CGPoint(x: centerX, y: centerY))
+                        path.addArc(center: CGPoint(x: centerX, y: centerY + radiusLarge),
+                                    radius: radiusLarge,
+                                    startAngle: .degrees(-90),
+                                    endAngle: .degrees(270),
+                                    clockwise: true)
+                    case 9:
+                        path.move(to: CGPoint(x: w * 0.3, y: h * 0.2))
+                        path.addArc(tangent1End: CGPoint(x: w * 0.7, y: h * 0.2), tangent2End: CGPoint(x: w * 0.7, y: h * 0.8), radius: w * 0.2)
+                        path.addArc(tangent1End: CGPoint(x: w * 0.3, y: h * 0.8), tangent2End: CGPoint(x: w * 0.3, y: h * 0.5), radius: w * 0.2)
+                        path.addLine(to: CGPoint(x: w * 0.7, y: h * 0.5))
                     default:
                         break
                     }
