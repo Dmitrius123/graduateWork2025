@@ -17,7 +17,7 @@ struct LevelSelectionView: View {
 
     var body: some View {
         VStack {
-            Text("Изберете ниво (цифра):")
+            Text("Изберете цифра:")
                 .font(.title)
                 .padding()
 
