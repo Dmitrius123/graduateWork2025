@@ -8,7 +8,7 @@
 import UIKit
 
 class DrawView: UIView {
-    var linewidth = CGFloat(15) { didSet { setNeedsDisplay() } }
+    var linewidth = CGFloat(40) { didSet { setNeedsDisplay() } }
     var color = UIColor.white { didSet { setNeedsDisplay() } }
     
     var lines: [Line] = [] {
