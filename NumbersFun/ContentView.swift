@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var showDrawingGuide = false
     @State private var animationProgress: CGFloat = 0.0
     @State private var isAnimating = false
+    @State private var failedAttempts = 0
     let model = try? mnistCNN(configuration: .init())
 
     let levelColors: [UIColor] = [
@@ -131,8 +132,15 @@ struct ContentView: View {
 
         if let predictedInt = Int(predictedDigit), predictedInt == selectedDigit {
             predictionResult = "Браво! Това е \(predictedInt)"
+            failedAttempts = 0
         } else {
             predictionResult = "Опитай отново! Това е \(predictedDigit)"
+            failedAttempts += 1
+
+            if failedAttempts == 3 {
+                failedAttempts = 0
+                startAnimation()
+            }
         }
     }
 
@@ -154,6 +162,8 @@ struct ContentView: View {
     }
 
     func startAnimation() {
+        failedAttempts = 0
+        
         withAnimation(nil) {
             animationProgress = 0.0
             showDrawingGuide = false

@@ -10,7 +10,7 @@ import SwiftUI
 struct TestView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var drawView = DrawView()
-    @State private var testDigits: [Int] = (0..<10).shuffled()
+    @State private var testDigits: [Int] = (0..<10).map { _ in Int.random(in: 0...9) }
     @State private var currentIndex = 0
     @State private var correctAnswers = 0
     @State private var showResult = false
