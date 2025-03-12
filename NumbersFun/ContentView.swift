@@ -61,7 +61,7 @@ struct ContentView: View {
                         predictionResult = "Разпозната цифра: ?"
                     }
                     .padding()
-                    .background(Color.red)
+                    .background(Color(red: 139/255, green: 0, blue: 0))
                     .foregroundColor(.white)
                     .cornerRadius(10)
 
@@ -69,7 +69,7 @@ struct ContentView: View {
                         predictDigit()
                     }
                     .padding()
-                    .background(Color.green)
+                    .background(Color(red: 0/255, green: 100/255, blue: 0/255))
                     .foregroundColor(.white)
                     .cornerRadius(10)
                 }
@@ -109,7 +109,7 @@ struct ContentView: View {
                 }
                 .padding()
                 .frame(width: geometry.size.width * 0.5)
-                .background(Color.purple)
+                .background(Color(red: 75/255, green: 0/255, blue: 130/255))
                 .foregroundColor(.white)
                 .cornerRadius(10)
                 .padding(.bottom, geometry.size.height * 0.07)
