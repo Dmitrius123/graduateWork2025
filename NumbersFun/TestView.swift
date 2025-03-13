@@ -58,7 +58,7 @@ struct TestView: View {
                         drawView.clear(backgroundColor: levelColors[testDigits[currentIndex]])
                     }
                     .padding()
-                    .background(Color.red)
+                    .background(Color(red: 139/255, green: 0, blue: 0))
                     .foregroundColor(.white)
                     .cornerRadius(10)
 
@@ -66,7 +66,7 @@ struct TestView: View {
                         checkAnswer()
                     }
                     .padding()
-                    .background(Color.green)
+                    .background(Color(red: 0/255, green: 100/255, blue: 0/255))
                     .foregroundColor(.white)
                     .cornerRadius(10)
                 }

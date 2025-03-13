@@ -162,7 +162,7 @@ struct AnimatedDigitView: View {
                     }
                     .trim(from: 0, to: progress)
                     .stroke(
-                        Color(red: 20/255, green: 0/255, blue: 40/255),
+                        Color.black,
                         style: StrokeStyle(
                             lineWidth: 45,
                             lineCap: .round
