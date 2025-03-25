@@ -38,7 +38,7 @@ struct TestView: View {
                     }) {
                         Image(systemName: "xmark")
                             .font(.system(size: 30))
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                     }
                 }
 
