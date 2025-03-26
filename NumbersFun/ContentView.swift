@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var isAnimating = false
     @State private var failedAttempts = 0
     @State private var hintsEnabled = true
+    @State private var showAlert = false
     let model = try? mnistCNN(configuration: .init())
 
     let levelColors: [UIColor] = [
@@ -127,7 +128,7 @@ struct ContentView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: toggleLanguage) {
+                        Button(action: {showAlert = true}) {
                             Image(systemName: "globe")
                                 .font(.title2)
                         }
@@ -140,6 +141,15 @@ struct ContentView: View {
                                 .font(.title2)
                         }
                     }
+                }
+                .alert(isPresented: $showAlert) {
+                    Alert(
+                        title: Text("Рестартиране"),
+                        message: Text("Приложението ще се затвори сега. Моля, отворете го отново."),
+                        dismissButton: .default(Text("OK")) {
+                            toggleLanguage()
+                        }
+                    )
                 }
             }
         }
