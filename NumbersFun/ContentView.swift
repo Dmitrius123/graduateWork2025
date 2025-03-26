@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var predictionResult: String = "Разпозната цифра: ?"
+    @State private var predictionResult: String = NSLocalizedString("digit", comment: "")
+    @State private var selectedLanguage: String = Locale.current.language.languageCode?.identifier ?? "bg"
     @State private var drawView = DrawView()
     @State private var selectedDigit: Int = 0
     @State private var isTestMode = false
@@ -16,6 +17,7 @@ struct ContentView: View {
     @State private var animationProgress: CGFloat = 0.0
     @State private var isAnimating = false
     @State private var failedAttempts = 0
+    @State private var hintsEnabled = true
     let model = try? mnistCNN(configuration: .init())
 
     let levelColors: [UIColor] = [
@@ -33,91 +35,112 @@ struct ContentView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                Text("Начертай цифра: \(selectedDigit)")
-                    .font(.title)
-                    .padding(.top, geometry.size.height * 0.1)
+            NavigationView {
+                VStack {
+                    Text("Начертай цифра: \(selectedDigit)")
+                        .font(.title)
+                        .padding(.top, 30)
+                        .padding()
 
-                ZStack {
-                    DrawViewRepresentable(drawView: $drawView, selectedDigit: selectedDigit)
-                        .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
-                        .background(Color(levelColors[selectedDigit]))
-                        .cornerRadius(20)
-                        .padding(.bottom, 20)
-
-                    if showDrawingGuide {
-                        AnimatedDigitView(digit: selectedDigit, progress: animationProgress)
+                    ZStack {
+                        DrawViewRepresentable(drawView: $drawView, selectedDigit: selectedDigit)
                             .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
-                            .opacity(showDrawingGuide ? 1 : 0)
-                            .animation(.easeInOut(duration: 0.3), value: showDrawingGuide)
+                            .background(Color(levelColors[selectedDigit]))
                             .cornerRadius(20)
                             .padding(.bottom, 20)
-                    }
-                }
 
-                HStack {
-                    Button("Изтрий") {
-                        drawView.clear(backgroundColor: levelColors[selectedDigit])
-                        predictionResult = "Разпозната цифра: ?"
-                    }
-                    .padding()
-                    .background(Color(red: 139/255, green: 0, blue: 0))
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-
-                    Button("Провери") {
-                        predictDigit()
-                    }
-                    .padding()
-                    .background(Color(red: 0/255, green: 100/255, blue: 0/255))
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                }
-                .padding(.bottom, 10)
-
-                Text(predictionResult)
-                    .font(.headline)
-                    .padding(.top, 20)
-                    .padding(.bottom, 40)
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 15) {
-                        ForEach(0..<10) { digit in
-                            Button(action: {
-                                selectedDigit = digit
-                                drawView.clear(backgroundColor: levelColors[digit])
-                                startAnimation()
-                            }) {
-                                Text("\(digit)")
-                                    .font(.title)
-                                    .frame(width: 50, height: 50)
-                                    .background(Color(levelColors[digit]))
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
-                            }
+                        if showDrawingGuide && hintsEnabled {
+                            AnimatedDigitView(digit: selectedDigit, progress: animationProgress)
+                                .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
+                                .opacity(1)
+                                .animation(.easeInOut(duration: 0.3), value: showDrawingGuide)
+                                .cornerRadius(20)
+                                .padding(.bottom, 20)
                         }
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 20)
+
+                    HStack {
+                        Button("Изтрий") {
+                            drawView.clear(backgroundColor: levelColors[selectedDigit])
+                            predictionResult = NSLocalizedString("digit", comment: "")
+                        }
+                        .padding()
+                        .background(Color(red: 139/255, green: 0, blue: 0))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+
+                        Button("Провери") {
+                            predictDigit()
+                        }
+                        .padding()
+                        .background(Color(red: 0/255, green: 100/255, blue: 0/255))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                    }
                     .padding(.bottom, 10)
-                }
 
-                Spacer()
+                    Text(predictionResult)
+                        .font(.headline)
+                        .padding(.top, 20)
+                        .padding(.bottom, 40)
 
-                Button("Тест") {
-                    isTestMode = true
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 15) {
+                            ForEach(0..<10) { digit in
+                                Button(action: {
+                                    selectedDigit = digit
+                                    drawView.clear(backgroundColor: levelColors[digit])
+                                    if hintsEnabled {
+                                        startAnimation()
+                                    }
+                                }) {
+                                    Text("\(digit)")
+                                        .font(.title)
+                                        .frame(width: 50, height: 50)
+                                        .background(Color(levelColors[digit]))
+                                        .foregroundColor(.white)
+                                        .cornerRadius(10)
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.top, 20)
+                        .padding(.bottom, 10)
+                    }
+
+                    Spacer()
+
+                    Button("Тест") {
+                        isTestMode = true
+                    }
+                    .padding()
+                    .frame(width: geometry.size.width * 0.5)
+                    .background(Color(red: 75/255, green: 0/255, blue: 130/255))
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .padding(.bottom, geometry.size.height * 0.07)
                 }
-                .padding()
-                .frame(width: geometry.size.width * 0.5)
-                .background(Color(red: 75/255, green: 0/255, blue: 130/255))
-                .foregroundColor(.white)
-                .cornerRadius(10)
                 .padding(.bottom, geometry.size.height * 0.07)
-            }
-            .padding(.bottom, geometry.size.height * 0.07)
-            .frame(height: geometry.size.height)
-            .fullScreenCover(isPresented: $isTestMode) {
-                TestView()
+                .frame(height: geometry.size.height)
+                .fullScreenCover(isPresented: $isTestMode) {
+                    TestView()
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: toggleLanguage) {
+                            Image(systemName: "globe")
+                                .font(.title2)
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: {
+                            hintsEnabled.toggle()
+                        }) {
+                            Image(systemName: hintsEnabled ? "lightbulb.fill" : "lightbulb.slash.fill")
+                                .font(.title2)
+                        }
+                    }
+                }
             }
         }
     }
@@ -131,13 +154,13 @@ struct ContentView: View {
         let predictedDigit = output?.classLabel ?? "?"
 
         if let predictedInt = Int(predictedDigit), predictedInt == selectedDigit {
-            predictionResult = "Браво! Това е \(predictedInt)"
+            predictionResult = String(format: NSLocalizedString("true", comment: ""), predictedInt)
             failedAttempts = 0
         } else {
-            predictionResult = "Опитай отново! Това е \(predictedDigit)"
+            predictionResult = NSLocalizedString("false", comment: "") + " \(predictedDigit)"
             failedAttempts += 1
 
-            if failedAttempts == 3 {
+            if failedAttempts == 3 && hintsEnabled {
                 failedAttempts = 0
                 startAnimation()
             }
@@ -162,6 +185,8 @@ struct ContentView: View {
     }
 
     func startAnimation() {
+        guard hintsEnabled else { return }
+
         failedAttempts = 0
         
         withAnimation(nil) {
@@ -177,6 +202,11 @@ struct ContentView: View {
             }
         }
     }
+
+    func toggleLanguage() {
+        selectedLanguage = (selectedLanguage == "en") ? "bg" : "en"
+        UserDefaults.standard.setValue([selectedLanguage], forKey: "AppleLanguages")
+        UserDefaults.standard.synchronize()
+        exit(0)
+    }
 }
-
-

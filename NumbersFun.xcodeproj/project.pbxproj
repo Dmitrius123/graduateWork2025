@@ -29,9 +29,30 @@
 		BC6542792D679A390077F027 /* NumbersFunUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NumbersFunUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BC5D2A412D9486170051B25C /* Exceptions for "NumbersFun" folder in "NumbersFunTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Localizable.xcstrings,
+			);
+			target = BC65426E2D679A390077F027 /* NumbersFunTests */;
+		};
+		BC5D2A422D9486170051B25C /* Exceptions for "NumbersFun" folder in "NumbersFunUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Localizable.xcstrings,
+			);
+			target = BC6542782D679A390077F027 /* NumbersFunUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BC65425F2D679A380077F027 /* NumbersFun */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BC5D2A412D9486170051B25C /* Exceptions for "NumbersFun" folder in "NumbersFunTests" target */,
+				BC5D2A422D9486170051B25C /* Exceptions for "NumbersFun" folder in "NumbersFunUITests" target */,
+			);
 			path = NumbersFun;
 			sourceTree = "<group>";
 		};
@@ -174,6 +195,7 @@
 			knownRegions = (
 				en,
 				Base,
+				bg,
 			);
 			mainGroup = BC6542542D679A380077F027;
 			minimizedProjectReferenceProxies = 1;
@@ -310,6 +332,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -366,6 +389,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
