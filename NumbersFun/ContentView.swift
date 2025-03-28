@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.colorScheme)  var colorScheme
     @State private var predictionResult: String = NSLocalizedString("digit", comment: "")
-    @State private var predictionTextColor: Color = .black
+    @State private var predictionTextColor: Color = .primary
     @State private var selectedLanguage: String = Locale.current.language.languageCode?.identifier ?? "bg"
     @State private var drawView = DrawView()
     @State private var selectedDigit: Int = 0
@@ -69,7 +69,7 @@ struct ContentView: View {
                         Button("Изтрий") {
                             drawView.clear(backgroundColor: levelColors[selectedDigit])
                             predictionResult = NSLocalizedString("digit", comment: "")
-                            predictionTextColor = .black
+                            predictionTextColor = .primary
                         }
                         .modifier(CustomButtonStyle(backgroundColor: Color(red: 139/255, green: 0, blue: 0)))
 
@@ -87,7 +87,7 @@ struct ContentView: View {
                                     selectedDigit = digit
                                     drawView.clear(backgroundColor: levelColors[digit])
                                     predictionResult = NSLocalizedString("digit", comment: "")
-                                    predictionTextColor = .black
+                                    predictionTextColor = .primary
                                     if hintsEnabled {
                                         startAnimation()
                                     }
