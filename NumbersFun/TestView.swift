@@ -29,61 +29,67 @@ struct TestView: View {
     ]
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack {
-                HStack {
+        NavigationView {
+            GeometryReader { geometry in
+                VStack {
+                    Text("Начертайте цифрa: \(testDigits[currentIndex])")
+                        .font(.custom("Marker Felt", size: 40))
+                        .multilineTextAlignment(.center)
+                        .padding(.top, geometry.size.height * 0.1)
+
+                    DrawViewRepresentable(drawView: $drawView, selectedDigit: testDigits[currentIndex])
+                        .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
+                        .background(Color(levelColors[testDigits[currentIndex]]))
+                        .cornerRadius(20)
+                        .padding(.bottom, 20)
+                        .padding(.vertical, geometry.size.height * 0.04)
+
+
+                    HStack(spacing: 25) {
+                        Button("Изтрий") {
+                            drawView.clear(backgroundColor: levelColors[testDigits[currentIndex]])
+                        }
+                        .font(.custom("Marker Felt", size: 30))
+                        .padding()
+                        .background(Color(red: 139/255, green: 0, blue: 0))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+
+                        Button("Провери") {
+                            checkAnswer()
+                        }
+                        .font(.custom("Marker Felt", size: 30))
+                        .padding()
+                        .background(Color(red: 0/255, green: 100/255, blue: 0/255))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                    }
+
                     Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.horizontal, 20)
+                .padding(.bottom, geometry.size.height * 0.2)
+                .alert(isPresented: $showResult) {
+                    Alert(
+                        title: Text("Резултат"),
+                        message: Text("Правилни отговори: \(correctAnswers) от 10"),
+                        dismissButton: .default(Text("Затвори")) {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    )
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         presentationMode.wrappedValue.dismiss()
                     }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 30))
+                        Text("X")
+                            .font(.custom("Marker Felt", size: 40))
                             .foregroundColor(.primary)
                     }
                 }
-
-                Text("Начертайте цифрa: \(testDigits[currentIndex])")
-                    .font(.title)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, geometry.size.height * 0.1)
-
-                DrawViewRepresentable(drawView: $drawView, selectedDigit: testDigits[currentIndex])
-                    .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
-                    .background(Color(levelColors[testDigits[currentIndex]]))
-                    .cornerRadius(20)
-                    .padding(.bottom, 20)
-
-                HStack {
-                    Button("Изтрий") {
-                        drawView.clear(backgroundColor: levelColors[testDigits[currentIndex]])
-                    }
-                    .padding()
-                    .background(Color(red: 139/255, green: 0, blue: 0))
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-
-                    Button("Провери") {
-                        checkAnswer()
-                    }
-                    .padding()
-                    .background(Color(red: 0/255, green: 100/255, blue: 0/255))
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                }
-
-                Spacer()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.horizontal, 20)
-            .padding(.bottom, geometry.size.height * 0.2)
-            .alert(isPresented: $showResult) {
-                Alert(
-                    title: Text("Резултат"),
-                    message: Text("Правилни отговори: \(correctAnswers) от 10"),
-                    dismissButton: .default(Text("Затвори")) {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                )
             }
         }
     }
@@ -93,10 +99,12 @@ struct TestView: View {
             return
         }
 
-        let model = try? mnistCNN(configuration: .init())
-        let output = try? model?.prediction(image: pixelBuffer)
+        // Пример загрузки модели
+        guard let model = try? mnistCNN(configuration: .init()) else { return }
+        let output = try? model.prediction(image: pixelBuffer)
         let predictedDigit = output?.classLabel ?? "?"
 
+        // Проверка на успешный распознанный ответ
         if let predictedInt = Int(predictedDigit), predictedInt == testDigits[currentIndex] {
             correctAnswers += 1
         }
@@ -111,18 +119,29 @@ struct TestView: View {
 
     func createPixelBuffer(from context: CGContext) -> CVPixelBuffer? {
         var pixelBuffer: CVPixelBuffer?
-        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
-                     kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
-        CVPixelBufferCreate(kCFAllocatorDefault, 28, 28, kCVPixelFormatType_OneComponent8, attrs, &pixelBuffer)
+        let attrs = [
+            kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
+            kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue
+        ] as CFDictionary
 
-        guard let buffer = pixelBuffer else { return nil }
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, 28, 28, kCVPixelFormatType_OneComponent8, attrs, &pixelBuffer)
+        guard status == kCVReturnSuccess, let buffer = pixelBuffer else {
+            return nil
+        }
 
         CVPixelBufferLockBaseAddress(buffer, [])
         let ciContext = CIContext()
-        let ciImage = CIImage(cgImage: context.makeImage()!)
+        guard let cgImage = context.makeImage() else {
+            return nil
+        }
+        let ciImage = CIImage(cgImage: cgImage)
         ciContext.render(ciImage, to: buffer)
         CVPixelBufferUnlockBaseAddress(buffer, [])
 
         return buffer
     }
+}
+
+#Preview {
+    TestView()
 }
