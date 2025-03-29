@@ -99,12 +99,11 @@ struct TestView: View {
             return
         }
 
-        // Пример загрузки модели
         guard let model = try? mnistCNN(configuration: .init()) else { return }
         let output = try? model.prediction(image: pixelBuffer)
         let predictedDigit = output?.classLabel ?? "?"
 
-        // Проверка на успешный распознанный ответ
+        
         if let predictedInt = Int(predictedDigit), predictedInt == testDigits[currentIndex] {
             correctAnswers += 1
         }

@@ -46,17 +46,16 @@ struct ContentView: View {
                             .padding(.horizontal, geometry.size.height * 0.02)
                             .padding(.vertical, geometry.size.height * 0.005)
                             .padding(.top, 20)
-
                             .frame(width: geometry.size.width * 1, height: geometry.size.width * 1)
-
+                        
                         if showDrawingGuide && hintsEnabled {
                             AnimatedDigitView(digit: selectedDigit, progress: animationProgress)
                                 .animation(.easeInOut(duration: 0.3), value: showDrawingGuide)
                                 .cornerRadius(20)
-                            .padding(.horizontal, geometry.size.height * 0.02)
-                            .padding(.vertical, geometry.size.height * 0.005)
-                            .padding(.top, 20)
-                    }
+                                .padding(.horizontal, geometry.size.height * 0.02)
+                                .padding(.vertical, geometry.size.height * 0.005)
+                                .padding(.top, 20)
+                        }
                     }
                     
                     
@@ -72,7 +71,7 @@ struct ContentView: View {
                             predictionTextColor = .primary
                         }
                         .modifier(CustomButtonStyle(backgroundColor: Color(red: 139/255, green: 0, blue: 0)))
-
+                        
                         Button("Провери") {
                             predictDigit()
                         }
@@ -138,7 +137,8 @@ struct ContentView: View {
                                 .foregroundColor(colorScheme == .dark ? .white : .black)
                         }
                     }
-                    ToolbarItem(placement: .principal) {                        Text("Начертай цифра: \(selectedDigit)")
+                    ToolbarItem(placement: .principal) {
+                        Text("Начертай цифра: \(selectedDigit)")
                             .font(.custom("Marker Felt", size: 35))
                     }
                 }
@@ -157,9 +157,7 @@ struct ContentView: View {
     }
 
     func predictDigit() {
-        guard let context = drawView.getViewContext(), let pixelBuffer = createPixelBuffer(from: context) else {
-            return
-        }
+        guard let context = drawView.getViewContext(), let pixelBuffer = createPixelBuffer(from: context) else { return }
 
         let output = try? model?.prediction(image: pixelBuffer)
         let predictedDigit = output?.classLabel ?? "?"
@@ -173,7 +171,7 @@ struct ContentView: View {
             predictionResult = NSLocalizedString("false", comment: "") + " \(predictedDigit)"
             predictionTextColor = Color(red: 139/255, green: 0, blue: 0)
             failedAttempts += 1
-
+            
             if failedAttempts == 3 && hintsEnabled {
                 failedAttempts = 0
                 startAnimation()
