@@ -6,7 +6,7 @@
   },
   "Outputs" : {
     "classLabel" : {
-      "MLFeatureShortDescription" : ""
+      "MLFeatureShortDescription" : "--"
     },
     "output" : {
       "MLFeatureShortDescription" : "Predicted digit"

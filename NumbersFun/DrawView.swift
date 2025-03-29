@@ -4,7 +4,7 @@
 //
 //  Created by Дмитрий Куприянов on 20.02.25.
 //
-
+import CoreML
 import UIKit
 
 class DrawView: UIView {

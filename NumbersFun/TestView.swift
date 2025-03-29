@@ -5,7 +5,10 @@
 //  Created by Дмитрий Куприянов on 7.03.25.
 //
 
+import CoreML
 import SwiftUI
+
+
 
 struct TestView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -99,7 +102,7 @@ struct TestView: View {
             return
         }
 
-        guard let model = try? mnistCNN(configuration: .init()) else { return }
+        guard let model = try? MLNumbers(configuration: .init()) else { return }
         let output = try? model.prediction(image: pixelBuffer)
         let predictedDigit = output?.classLabel ?? "?"
 

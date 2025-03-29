@@ -5,7 +5,10 @@
 //  Created by Дмитрий Куприянов on 20.02.25.
 //
 
+import CoreML
 import SwiftUI
+
+
 
 struct ContentView: View {
     @Environment(\.colorScheme)  var colorScheme
@@ -20,7 +23,7 @@ struct ContentView: View {
     @State private var failedAttempts = 0
     @State private var hintsEnabled = true
     @State private var showAlert = false
-    let model = try? mnistCNN(configuration: .init())
+    let model = try? MLNumbers(configuration: .init())
 
     let levelColors: [UIColor] = [
         UIColor(red: 20/255, green: 20/255, blue: 20/255, alpha: 1),
