@@ -78,7 +78,14 @@
       }
     },
     "X" : {
-
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "X"
+          }
+        }
+      }
     },
     "Затвори" : {
       "localizations" : {

@@ -65,7 +65,7 @@ struct AnimatedDigitView: View {
                                         clockwise: false)
                             
                             path.move(to: CGPoint(x: w * 0.49, y: h * 0.452))
-                            path.addArc(center: CGPoint(x: centerX, y: centerY + radiusLarge - 17.5),
+                            path.addArc(center: CGPoint(x: centerX, y: centerY + radiusLarge - 20),
                                         radius: radiusLarge,
                                         startAngle: .degrees(-90),
                                         endAngle: .degrees(140),
@@ -130,7 +130,7 @@ struct AnimatedDigitView: View {
                                         endAngle: .degrees(450),
                                         clockwise: false)
                             
-                            path.addArc(center: CGPoint(x: centerX, y: centerY + radiusLarge - 18.85),
+                            path.addArc(center: CGPoint(x: centerX, y: centerY + radiusLarge - 20.5),
                                         radius: radiusLarge,
                                         startAngle: .degrees(-90),
                                         endAngle: .degrees(270),
