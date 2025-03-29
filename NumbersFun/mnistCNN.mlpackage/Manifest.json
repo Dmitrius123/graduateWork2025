@@ -1,0 +1,24 @@
+{
+    "fileFormatVersion": "1.0.0",
+    "itemInfoEntries": {
+        "670090F8-170E-4798-BDE0-B32970DE641D": {
+            "author": "com.apple.CoreML",
+            "description": "External FeatureDescription Overlay",
+            "name": "FeatureDescriptions.json",
+            "path": "com.apple.CoreML/FeatureDescriptions.json"
+        },
+        "7B26EFBC-DE29-4996-BCCA-DA9CFDE80508": {
+            "author": "com.apple.CoreML",
+            "description": "External Metadata Overlay",
+            "name": "Metadata.json",
+            "path": "com.apple.CoreML/Metadata.json"
+        },
+        "8C415192-ECC1-4644-86BB-8524997D36D5": {
+            "author": "com.apple.CoreML",
+            "description": "CoreML Model Specification",
+            "name": "mnistCNN.mlmodel",
+            "path": "com.apple.CoreML/mnistCNN.mlmodel"
+        }
+    },
+    "rootModelIdentifier": "8C415192-ECC1-4644-86BB-8524997D36D5"
+}

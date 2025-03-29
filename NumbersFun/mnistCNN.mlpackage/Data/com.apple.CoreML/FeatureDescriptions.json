@@ -1,0 +1,21 @@
+{
+  "Inputs" : {
+    "image" : {
+      "MLFeatureShortDescription" : "Grayscale image of hand written digit"
+    }
+  },
+  "Outputs" : {
+    "classLabel" : {
+      "MLFeatureShortDescription" : ""
+    },
+    "output" : {
+      "MLFeatureShortDescription" : "Predicted digit"
+    }
+  },
+  "TrainingInputs" : {
+
+  },
+  "States" : {
+
+  }
+}
