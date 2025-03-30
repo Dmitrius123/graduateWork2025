@@ -172,8 +172,8 @@ struct AnimatedDigitView: View {
                 }
             }
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.3) {
-                    withAnimation {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.2) {
+                    withAnimation(.easeInOut(duration: 1)) {
                         isDigitVisible = false
                     }
                 }
