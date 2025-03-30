@@ -8,6 +8,12 @@
             "state" : "translated",
             "value" : "%lld"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
         }
       }
     },
@@ -100,6 +106,12 @@
             "state" : "translated",
             "value" : "X"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "X"
+          }
         }
       }
     },
@@ -115,16 +127,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Close"
-          }
-        }
-      }
-    },
-    "Изберете цифра:" : {
-      "localizations" : {
-        "bg" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Изберете цифра:"
           }
         }
       }
