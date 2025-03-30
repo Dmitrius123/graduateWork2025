@@ -14,6 +14,8 @@ struct TestView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var drawView = DrawView()
     @State private var testDigits: [Int] = (0..<10).map { _ in Int.random(in: 0...9) }
+    @State private var currentLevel = 1
+    @State private var totalLevels = 10
     @State private var currentIndex = 0
     @State private var correctAnswers = 0
     @State private var showResult = false
@@ -93,6 +95,11 @@ struct TestView: View {
                             .foregroundColor(.primary)
                     }
                 }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Text("\(currentLevel)/\(totalLevels)")
+                        .font(.custom("Marker Felt", size: 40))
+                        .foregroundColor(.primary)
+                }
             }
         }
     }
@@ -113,6 +120,7 @@ struct TestView: View {
 
         if currentIndex < 9 {
             currentIndex += 1
+            currentLevel += 1
             drawView.clear(backgroundColor: levelColors[testDigits[currentIndex]])
         } else {
             showResult = true
