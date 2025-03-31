@@ -6,7 +6,7 @@
 //
 import CoreML
 import UIKit
-import AVFoundation // Импортируем для работы со звуком
+import AVFoundation
 
 class DrawView: UIView {
     var linewidth = CGFloat(40) { didSet { setNeedsDisplay() } }
@@ -31,16 +31,15 @@ class DrawView: UIView {
     // Настройка звука
     private func setupAudio() {
         guard let url = Bundle.main.url(forResource: "pencil_sound", withExtension: "mp3") else {
-            print("Не найден файл со звуком!")
             return
         }
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.numberOfLoops = -1 // Цикличное воспроизведение
+            audioPlayer?.numberOfLoops = -1
             audioPlayer?.prepareToPlay()
         } catch {
-            print("Ошибка загрузки звука: \(error.localizedDescription)")
+            print("error loading sound file")
         }
     }
 
@@ -57,7 +56,7 @@ class DrawView: UIView {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        audioPlayer?.pause() // Останавливаем звук, когда палец оторвался
+        audioPlayer?.pause()
     }
 
     override func draw(_ rect: CGRect) {
