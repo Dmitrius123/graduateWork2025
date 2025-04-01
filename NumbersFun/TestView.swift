@@ -8,8 +8,6 @@
 import CoreML
 import SwiftUI
 
-
-
 struct TestView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var drawView = DrawView()
@@ -37,18 +35,23 @@ struct TestView: View {
         NavigationView {
             GeometryReader { geometry in
                 VStack {
-                    Text("Начертайте цифрa: \(testDigits[currentIndex])")
-                        .font(.custom("Marker Felt", size: 40))
-                        .multilineTextAlignment(.center)
-                        .padding(.top, geometry.size.height * 0.1)
-
+                    ZStack {
+                        Text("Начертай цифра: \(testDigits[currentIndex])")
+                            .font(.custom("Marker Felt", size: 35))
+                            .multilineTextAlignment(.center)
+                            .padding(.top, geometry.size.height * 0.1)
+                            .rotation3DEffect(
+                                .degrees(Double(currentIndex % 2 == 0 ? 360 : 0)),
+                                axis: (x: 0, y: 1, z: 0)
+                            )
+                            .animation(.easeInOut(duration: 0.4), value: currentIndex)
+                    }
                     DrawViewRepresentable(drawView: $drawView, selectedDigit: testDigits[currentIndex])
                         .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
                         .background(Color(levelColors[testDigits[currentIndex]]))
                         .cornerRadius(20)
                         .padding(.bottom, 20)
                         .padding(.vertical, geometry.size.height * 0.04)
-
 
                     HStack(spacing: 25) {
                         Button("Изтрий") {
@@ -113,14 +116,15 @@ struct TestView: View {
         let output = try? model.prediction(image: pixelBuffer)
         let predictedDigit = output?.classLabel ?? "?"
 
-        
         if let predictedInt = Int(predictedDigit), predictedInt == testDigits[currentIndex] {
             correctAnswers += 1
         }
 
         if currentIndex < 9 {
-            currentIndex += 1
-            currentLevel += 1
+            withAnimation(.easeInOut(duration: 0.4)) {
+                currentIndex += 1
+                currentLevel += 1
+            }
             drawView.clear(backgroundColor: levelColors[testDigits[currentIndex]])
         } else {
             showResult = true

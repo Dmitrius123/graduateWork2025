@@ -163,22 +163,6 @@
         }
       }
     },
-    "Начертайте цифрa: %lld" : {
-      "localizations" : {
-        "bg" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Начертай цифрa: %lld"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Draw a number: %lld"
-          }
-        }
-      }
-    },
     "Правилни отговори: %lld от 10" : {
       "localizations" : {
         "bg" : {
