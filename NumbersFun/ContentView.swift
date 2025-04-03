@@ -7,8 +7,7 @@
 
 import CoreML
 import SwiftUI
-
-
+import AudioToolbox
 
 struct ContentView: View {
     @Environment(\.colorScheme)  var colorScheme
@@ -23,8 +22,11 @@ struct ContentView: View {
     @State private var failedAttempts = 0
     @State private var hintsEnabled = true
     @State private var showAlert = false
+    @State private var isDigitPressed: Bool = false
+    @State private var isTestPressed: Bool = false
+    @State private var isPressed: [Int: Bool] = [:]
     let model = try? MLNumbers(configuration: .init())
-
+    
     let levelColors: [UIColor] = [
         UIColor(red: 20/255, green: 20/255, blue: 20/255, alpha: 1),
         UIColor(red: 10/255, green: 0/255, blue: 50/255, alpha: 1),
@@ -37,7 +39,7 @@ struct ContentView: View {
         UIColor(red: 0/255, green: 50/255, blue: 50/255, alpha: 1),
         UIColor(red: 20/255, green: 0/255, blue: 20/255, alpha: 1)
     ]
-
+    
     var body: some View {
         GeometryReader { geometry in
             NavigationView {
@@ -66,7 +68,7 @@ struct ContentView: View {
                         .font(.custom("Marker Felt", size: 33))
                         .padding(.vertical, geometry.size.height * 0.035)
                         .foregroundColor(predictionTextColor)
-
+                    
                     HStack(spacing: 25) {
                         Button("Изтрий") {
                             drawView.clear(backgroundColor: levelColors[selectedDigit])
@@ -81,11 +83,15 @@ struct ContentView: View {
                         .modifier(CustomButtonStyle(backgroundColor: Color(red: 0/255, green: 100/255, blue: 0/255)))
                     }
                     .padding(.bottom, geometry.size.height * 0.05)
-
+                    
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
                             ForEach(0..<10) { digit in
                                 Button(action: {
+                                    isPressed[digit] = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        isPressed[digit] = false
+                                    }
                                     selectedDigit = digit
                                     drawView.clear(backgroundColor: levelColors[digit])
                                     predictionResult = NSLocalizedString("digit", comment: "")
@@ -101,14 +107,20 @@ struct ContentView: View {
                                         .foregroundColor(.white)
                                         .cornerRadius(10)
                                 }
+                                .scaleEffect(isPressed[digit] ?? false ? 1.1 : 1.0)
+                                .animation(.easeInOut(duration: 0.2), value: isPressed[digit] ?? false)
                             }
                         }
                         .padding(.horizontal, geometry.size.width * 0.02)
                         .padding(.bottom, geometry.size.height * 0.01)
                     }
-
-
+                    
+                    
                     Button("Тест") {
+                        isTestPressed = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            isTestPressed = false
+                        }
                         isTestMode = true
                     }
                     .font(.custom("Marker Felt", size: 45))
@@ -118,7 +130,10 @@ struct ContentView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
                     .padding(.bottom, geometry.size.height * 0.1)
-           
+                    .scaleEffect(isTestPressed ? 1.1 : 1.0)
+                    .animation(.easeInOut(duration: 0.2), value: isTestPressed)
+                    
+                    
                 }
                 .fullScreenCover(isPresented: $isTestMode) {
                     TestView()
@@ -158,22 +173,23 @@ struct ContentView: View {
             }
         }
     }
-
+    
     func predictDigit() {
         guard let context = drawView.getViewContext(), let pixelBuffer = createPixelBuffer(from: context) else { return }
-
+        
         let output = try? model?.prediction(image: pixelBuffer)
         let predictedDigit = output?.classLabel ?? "?"
-
+        
         if let predictedInt = Int(predictedDigit), predictedInt == selectedDigit {
             predictionResult = String(format: NSLocalizedString("true", comment: ""), predictedInt)
             predictionTextColor = Color(red: 0/255, green: 100/255, blue: 0/255)
-
+            
             failedAttempts = 0
         } else {
             predictionResult = NSLocalizedString("false", comment: "") + " \(predictedDigit)"
             predictionTextColor = Color(red: 139/255, green: 0, blue: 0)
             failedAttempts += 1
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate) 
             
             if failedAttempts == 3 && hintsEnabled {
                 failedAttempts = 0
@@ -198,16 +214,16 @@ struct ContentView: View {
         
         return buffer
     }
-
+    
     func startAnimation() {
         guard hintsEnabled else { return }
-
+        
         failedAttempts = 0
         withAnimation(nil) {
             animationProgress = 0.0
             showDrawingGuide = false
         }
-
+        
         DispatchQueue.main.asyncAfter(deadline: .now()) {
             showDrawingGuide = true
             withAnimation(.easeInOut(duration: 2.5)) {
@@ -215,7 +231,7 @@ struct ContentView: View {
             }
         }
     }
-
+    
     func toggleLanguage() {
         selectedLanguage = (selectedLanguage == "en") ? "bg" : "en"
         UserDefaults.standard.setValue([selectedLanguage], forKey: "AppleLanguages")
@@ -226,7 +242,8 @@ struct ContentView: View {
 
 struct CustomButtonStyle: ViewModifier {
     let backgroundColor: Color
-
+    @State private var isPressed = false
+    
     func body(content: Content) -> some View {
         content
             .font(.custom("Marker Felt", size: 30))
@@ -234,6 +251,11 @@ struct CustomButtonStyle: ViewModifier {
             .background(backgroundColor)
             .foregroundColor(.white)
             .cornerRadius(10)
+            .scaleEffect(isPressed ? 1.1 : 1.0)
+            .animation(.easeInOut(duration: 0.2), value: isPressed)
+            .onLongPressGesture(minimumDuration: 0, pressing: { pressing in
+                isPressed = pressing
+            }, perform: {})
     }
 }
 
