@@ -66,6 +66,22 @@
         }
       }
     },
+    "NumbersFun" : {
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NumbersFun"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NumberFun"
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "bg" : {
@@ -131,6 +147,22 @@
         }
       }
     },
+    "Дипломна работа\nДмитрий Куприянов" : {
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дипломна работа\nДмитрий Куприянов"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graduate work\nDmitry Kupriianov"
+          }
+        }
+      }
+    },
     "Затвори" : {
       "localizations" : {
         "bg" : {
@@ -159,6 +191,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clean"
+          }
+        }
+      }
+    },
+    "Към начало" : {
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Към начало"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
           }
         }
       }
@@ -216,13 +264,13 @@
         "bg" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Приложението ще се затвори сега.        Моля, отворете го отново."
+            "value" : "Приложението ще се затвори сега.\nМоля, отворете го отново."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The app will close now.                                    Please open it again."
+            "value" : "The app will close now.\nPlease open it again."
           }
         }
       }

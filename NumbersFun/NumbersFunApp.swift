@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct NumbersFunApp: App {
+    @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore: Bool = false
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if hasLaunchedBefore {
+                ContentView()
+            } else {
+                RootView()
+            }
         }
     }
 }
