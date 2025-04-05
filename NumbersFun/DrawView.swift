@@ -18,6 +18,7 @@ class DrawView: UIView {
     }
     var lastPoint: CGPoint!
     var audioPlayer: AVAudioPlayer?
+    var onUserDraw: (() -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,6 +48,7 @@ class DrawView: UIView {
         lines.append(Line(start: lastPoint, end: newPoint))
         lastPoint = newPoint
         setNeedsDisplay()
+        onUserDraw?()
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

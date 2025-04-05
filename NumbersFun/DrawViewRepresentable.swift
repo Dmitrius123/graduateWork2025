@@ -10,8 +10,10 @@ import SwiftUI
 struct DrawViewRepresentable: UIViewRepresentable {
     @Binding var drawView: DrawView
     var selectedDigit: Int
+    var onDraw:(() -> Void)? = nil
     
     func makeUIView(context: Context) -> DrawView {
+        drawView.onUserDraw = onDraw
         return drawView
     }
     

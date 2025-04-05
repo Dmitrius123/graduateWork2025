@@ -27,6 +27,7 @@ struct ContentView: View {
     @State private var isPressed: [Int: Bool] = [:]
     @State private var showConfetti = false
     @State private var showSuccessAlert = false
+    @State private var hasDrawn = false
     
     let model = try? MLNumbers(configuration: .init())
     
@@ -48,7 +49,7 @@ struct ContentView: View {
             NavigationView {
                 VStack {
                     ZStack {
-                        DrawViewRepresentable(drawView: $drawView, selectedDigit: selectedDigit)
+                        DrawViewRepresentable(drawView: $drawView, selectedDigit: selectedDigit, onDraw: {if !hasDrawn {hasDrawn = true}})
                             .background(Color(levelColors[selectedDigit]))
                             .cornerRadius(20)
                             .padding(.horizontal, geometry.size.height * 0.02)
@@ -76,13 +77,17 @@ struct ContentView: View {
                             drawView.clear(backgroundColor: levelColors[selectedDigit])
                             predictionResult = NSLocalizedString("digit", comment: "")
                             predictionTextColor = .primary
+                            hasDrawn = false
+
                         }
                         .modifier(CustomButtonStyle(backgroundColor: Color(red: 139/255, green: 0, blue: 0)))
                         
                         Button("Провери") {
                             predictDigit()
                         }
+                        .disabled(!hasDrawn)
                         .modifier(CustomButtonStyle(backgroundColor: Color(red: 0/255, green: 100/255, blue: 0/255)))
+                        .opacity(hasDrawn ? 1 : 0.5)
                     }
                     .padding(.bottom, geometry.size.height * 0.05)
                     
@@ -95,6 +100,7 @@ struct ContentView: View {
                                         isPressed[digit] = false
                                     }
                                     selectedDigit = digit
+                                    hasDrawn = false
                                     drawView.clear(backgroundColor: levelColors[digit])
                                     predictionResult = NSLocalizedString("digit", comment: "")
                                     predictionTextColor = .primary

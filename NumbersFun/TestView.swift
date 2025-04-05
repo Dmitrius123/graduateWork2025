@@ -23,6 +23,7 @@ struct TestView: View {
     @State private var player: AVAudioPlayer?
     @State private var showCongratulation = false
     @State private var activeAlert: AlertType?
+    @State private var hasDrawn = false
     
     @State private var confettiPosition: [CGPoint] = []
     @State private var confettiOpacity: [Double] = []
@@ -57,7 +58,7 @@ struct TestView: View {
                             )
                             .animation(.easeInOut(duration: 0.4), value: currentIndex)
                     }
-                    DrawViewRepresentable(drawView: $drawView, selectedDigit: testDigits[currentIndex])
+                    DrawViewRepresentable(drawView: $drawView, selectedDigit : testDigits[currentIndex], onDraw: {hasDrawn = true})
                         .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.9)
                         .background(Color(levelColors[testDigits[currentIndex]]))
                         .cornerRadius(20)
@@ -67,6 +68,7 @@ struct TestView: View {
                     HStack(spacing: 25) {
                         Button("Изтрий") {
                             isErasePressed = true
+                            hasDrawn = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 isErasePressed = false
                             }
@@ -87,12 +89,14 @@ struct TestView: View {
                             }
                             checkAnswer()
                         }
+                        .disabled(!hasDrawn)
                         .font(.custom("Marker Felt", size: 30))
                         .frame(width: 130, height: 50)
                         .background(Color(red: 0/255, green: 100/255, blue: 0/255))
                         .foregroundColor(.white)
                         .cornerRadius(10)
                         .scaleEffect(isCheckPressed ? 1.1 : 1.0)
+                        .opacity(hasDrawn ? 1 : 0.5)
                         .animation(.easeInOut(duration: 0.2), value: isCheckPressed)
                     }
                     
@@ -176,6 +180,7 @@ struct TestView: View {
             withAnimation(.easeInOut(duration: 0.4)) {
                 currentIndex += 1
                 currentLevel += 1
+                hasDrawn = false
             }
             drawView.clear(backgroundColor: levelColors[testDigits[currentIndex]])
         }
