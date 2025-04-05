@@ -10,7 +10,7 @@ import SwiftUI
 import AudioToolbox
 
 struct ContentView: View {
-    @Environment(\.colorScheme)  var colorScheme
+    @Environment(\.colorScheme) var colorScheme
     @State private var predictionResult: String = NSLocalizedString("digit", comment: "")
     @State private var predictionTextColor: Color = .primary
     @State private var selectedLanguage: String = Locale.current.language.languageCode?.identifier ?? "bg"
@@ -25,6 +25,9 @@ struct ContentView: View {
     @State private var isDigitPressed: Bool = false
     @State private var isTestPressed: Bool = false
     @State private var isPressed: [Int: Bool] = [:]
+    @State private var showConfetti = false
+    @State private var showSuccessAlert = false
+    
     let model = try? MLNumbers(configuration: .init())
     
     let levelColors: [UIColor] = [
@@ -62,7 +65,6 @@ struct ContentView: View {
                                 .padding(.top, 20)
                         }
                     }
-                    
                     
                     Text(predictionResult)
                         .font(.custom("Marker Felt", size: 33))
@@ -115,7 +117,6 @@ struct ContentView: View {
                         .padding(.bottom, geometry.size.height * 0.01)
                     }
                     
-                    
                     Button("Тест") {
                         isTestPressed = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -132,15 +133,13 @@ struct ContentView: View {
                     .padding(.bottom, geometry.size.height * 0.1)
                     .scaleEffect(isTestPressed ? 1.1 : 1.0)
                     .animation(.easeInOut(duration: 0.2), value: isTestPressed)
-                    
-                    
                 }
                 .fullScreenCover(isPresented: $isTestMode) {
                     TestView()
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {showAlert = true}) {
+                        Button(action: { showAlert = true }) {
                             Image(systemName: "globe")
                                 .font(.title3)
                                 .foregroundColor(colorScheme == .dark ? .white : .black)
@@ -164,8 +163,7 @@ struct ContentView: View {
                     Alert(
                         title: Text("Рестартиране"),
                         message: Text("Приложението ще се затвори сега. Моля, отворете го отново."),
-                        
-                        dismissButton: .default(Text("OK")){
+                        dismissButton: .default(Text("OK")) {
                             toggleLanguage()
                         }
                     )
@@ -189,7 +187,7 @@ struct ContentView: View {
             predictionResult = NSLocalizedString("false", comment: "") + " \(predictedDigit)"
             predictionTextColor = Color(red: 139/255, green: 0, blue: 0)
             failedAttempts += 1
-            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate) 
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
             
             if failedAttempts == 3 && hintsEnabled {
                 failedAttempts = 0
@@ -204,11 +202,11 @@ struct ContentView: View {
              kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
         CVPixelBufferCreate(kCFAllocatorDefault, 28, 28, kCVPixelFormatType_OneComponent8, attrs, &pixelBuffer)
         
-        guard let buffer = pixelBuffer else { return nil }
+        guard let buffer = pixelBuffer, let cgImage = context.makeImage() else { return nil }
         
         CVPixelBufferLockBaseAddress(buffer, [])
         let ciContext = CIContext()
-        let ciImage = CIImage(cgImage: context.makeImage()!)
+        let ciImage = CIImage(cgImage: cgImage)
         ciContext.render(ciImage, to: buffer)
         CVPixelBufferUnlockBaseAddress(buffer, [])
         

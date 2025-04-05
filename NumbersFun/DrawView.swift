@@ -1,9 +1,10 @@
 //
-//  Item.swift
+//  DrawView.swift
 //  NumbersFun
 //
 //  Created by Дмитрий Куприянов on 20.02.25.
 //
+
 import CoreML
 import UIKit
 import AVFoundation
@@ -28,24 +29,17 @@ class DrawView: UIView {
         setupAudio()
     }
     
-    // Настройка звука
     private func setupAudio() {
-        guard let url = Bundle.main.url(forResource: "pencil_sound", withExtension: "mp3") else {
-            return
-        }
+        guard let url = Bundle.main.url(forResource: "pencil_sound", withExtension: "mp3") else { return }
         
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.numberOfLoops = -1
-            audioPlayer?.prepareToPlay()
-        } catch {
-            print("error loading sound file")
-        }
+        audioPlayer = try? AVAudioPlayer(contentsOf: url)
+        audioPlayer?.numberOfLoops = -1
+        audioPlayer?.prepareToPlay()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         lastPoint = touches.first!.location(in: self)
-        audioPlayer?.play() // Включаем звук
+        audioPlayer?.play()
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {

@@ -115,6 +115,22 @@
         }
       }
     },
+    "Браво!" : {
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Браво!🎉"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Good job!🎉"
+          }
+        }
+      }
+    },
     "Затвори" : {
       "localizations" : {
         "bg" : {
@@ -159,6 +175,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Draw a number: %lld"
+          }
+        }
+      }
+    },
+    "Поздравления, нарисувахте правилно всички числа!" : {
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поздравления, нарисувахте правилно всички числа!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Congratulations, you drew all the numbers correctly!"
           }
         }
       }
