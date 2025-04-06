@@ -46,7 +46,7 @@ struct ContentView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            NavigationView {
+            NavigationStack {
                 VStack {
                     ZStack {
                         DrawViewRepresentable(drawView: $drawView, selectedDigit: selectedDigit, onDraw: {if !hasDrawn {hasDrawn = true}})
@@ -68,7 +68,7 @@ struct ContentView: View {
                     }
                     
                     Text(predictionResult)
-                        .font(.custom("Marker Felt", size: 33))
+                        .font(.custom("Marker Felt", size: geometry.size.height * 0.045))
                         .padding(.vertical, geometry.size.height * 0.035)
                         .foregroundColor(predictionTextColor)
                     
@@ -109,8 +109,8 @@ struct ContentView: View {
                                     }
                                 }) {
                                     Text("\(digit)")
-                                        .font(.custom("Marker Felt", size: 45))
-                                        .frame(width: 70, height: 70)
+                                        .font(.custom("Marker Felt", size: geometry.size.height * 0.06))
+                                        .frame(width: geometry.size.height * 0.08, height: geometry.size.height * 0.08)
                                         .background(Color(levelColors[digit]))
                                         .foregroundColor(.white)
                                         .cornerRadius(10)
@@ -130,7 +130,7 @@ struct ContentView: View {
                         }
                         isTestMode = true
                     }
-                    .font(.custom("Marker Felt", size: 45))
+                    .font(.custom("Marker Felt", size: geometry.size.height * 0.06))
                     .padding()
                     .frame(width: geometry.size.width * 0.5, height: 70)
                     .background(Color(red: 75/255, green: 0/255, blue: 130/255))
@@ -162,7 +162,7 @@ struct ContentView: View {
                     }
                     ToolbarItem(placement: .principal) {
                         Text("Начертай цифра: \(selectedDigit)")
-                            .font(.custom("Marker Felt", size: 35))
+                            .font(.custom("Marker Felt", size: geometry.size.height * 0.043))
                     }
                 }
                 .alert(isPresented: $showAlert) {

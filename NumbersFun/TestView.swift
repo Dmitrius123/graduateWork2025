@@ -49,7 +49,7 @@ struct TestView: View {
                 VStack {
                     ZStack {
                         Text("Начертай цифра: \(testDigits[currentIndex])")
-                            .font(.custom("Marker Felt", size: 35))
+                            .font(.custom("Marker Felt", size: geometry.size.height * 0.045))
                             .multilineTextAlignment(.center)
                             .padding(.top, geometry.size.height * 0.1)
                             .rotation3DEffect(
